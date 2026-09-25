@@ -11,26 +11,20 @@ interface Props {
   license: AvatarLicense
 }
 
-/** ビューポート右下: アバター名と改変・再配布の可否。改変禁止なら警告色 */
+/** ステージ左下: アバター名と改変・再配布の可否。改変禁止なら警告色 */
 export function LicenseBadge({ license }: Props) {
   const warn = license.modification === 'prohibited'
+  const spec = `VRM ${license.specVersion === '0' ? '0.x' : '1.0'}`
+  const tip = [license.name, spec, license.licenseLabel].filter(Boolean).join('\n')
   return (
-    <div className={`${styles.badge} ${warn ? styles.warn : ''}`} role="status">
-      <div className={styles.name} title={license.name}>
-        {license.name}
-        <span className={styles.spec}>VRM {license.specVersion === '0' ? '0.x' : '1.0'}</span>
+    <div className={`${styles.badge} ${warn ? styles.warn : ''}`} role="status" title={tip}>
+      <div className={styles.name}>{license.name}</div>
+      <div className={styles.rows}>
+        <span data-state={license.modification}>改変{LABEL[license.modification]}</span>
+        <span data-state={license.redistribution}>再配布{LABEL[license.redistribution]}</span>
+        <span className={`mono ${styles.spec}`}>{spec}</span>
       </div>
-      <dl className={styles.rows}>
-        <dt>改変</dt>
-        <dd data-state={license.modification}>{LABEL[license.modification]}</dd>
-        <dt>再配布</dt>
-        <dd data-state={license.redistribution}>{LABEL[license.redistribution]}</dd>
-      </dl>
-      {license.licenseLabel && (
-        <div className={styles.license} title={license.licenseLabel}>
-          {license.licenseLabel}
-        </div>
-      )}
+      {license.licenseLabel && <div className={`mono ${styles.license}`}>{license.licenseLabel}</div>}
       {warn && <div className={styles.note}>このアバターは改変が禁止されています</div>}
     </div>
   )

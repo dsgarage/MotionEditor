@@ -187,3 +187,14 @@ export function buildRows(doc: MotionDocument, expanded: ReadonlySet<string>): T
   }
   return rows
 }
+
+/** その行が bone のトラックを含むか(選択ボーンの行を強調する表示用。「全体」は含めない) */
+export function rowHasBone(row: Pick<TimelineRow, 'id' | 'depth'>, bone: string): boolean {
+  const slash = row.id.indexOf('/')
+  const groupId = slash < 0 ? row.id : row.id.slice(0, slash)
+  const group = ROW_GROUPS.find((g) => g.id === groupId)
+  if (!group || group.members === 'expressions') return false
+  if (row.depth === 0) return group.members.some((m) => m.ref.kind === 'bone' && m.ref.bone === bone)
+  const label = row.id.slice(slash + 1)
+  return group.members.some((m) => m.label === label && m.ref.kind === 'bone' && m.ref.bone === bone)
+}

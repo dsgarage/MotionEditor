@@ -1,0 +1,57 @@
+/* カプセル: 角丸 16 = 再生ボタン 12 + 余白 4(同心) */
+.capsule {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  translate: -50% 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: min(540px, calc(100% - 24px));
+  height: 56px;
+  padding: 0 10px 0 6px;
+  border-radius: var(--radius-capsule);
+  background: rgba(28, 28, 28, 0.94);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.play {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+.rule {
+  width: 1px;
+  height: 24px;
+  margin: 0 6px;
+  flex: none;
+  background: var(--rule);
+}
+
+/* フレーム番号はトランスポートでいちばん大きい */
+.frame {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.total {
+  color: var(--fg-3);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.fps {
+  font-size: 12px;
+  color: var(--fg-2);
+  white-space: nowrap;
+}
+
+.loop {
+  height: 32px;
+}

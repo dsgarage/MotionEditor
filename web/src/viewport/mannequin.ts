@@ -4,7 +4,7 @@ import * as THREE from 'three'
 export function createMannequin(): THREE.Group {
   const group = new THREE.Group()
   group.name = 'Mannequin'
-  const mat = new THREE.MeshStandardMaterial({ color: 0x6b7280, roughness: 0.7 })
+  const mat = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.8 })
 
   const part = (geo: THREE.BufferGeometry, x: number, y: number, z = 0, rotZ = 0) => {
     const m = new THREE.Mesh(geo, mat.clone())
@@ -26,4 +26,34 @@ export function createMannequin(): THREE.Group {
 
   mat.dispose()
   return group
+}
+
+/**
+ * 足元の接地影(床面は描かない)。中心が濃く外へ向かって消える円を床に寝かせる
+ */
+export function createContactShadow(): THREE.Mesh {
+  const size = 128
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d')
+  if (ctx) {
+    const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2)
+    g.addColorStop(0, 'rgba(0,0,0,0.42)')
+    g.addColorStop(0.45, 'rgba(0,0,0,0.2)')
+    g.addColorStop(1, 'rgba(0,0,0,0)')
+    ctx.fillStyle = g
+    ctx.fillRect(0, 0, size, size)
+  }
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.colorSpace = THREE.SRGBColorSpace
+  const mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.4, 1.0),
+    new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false }),
+  )
+  mesh.name = 'ContactShadow'
+  mesh.rotation.x = -Math.PI / 2
+  mesh.position.y = 0.001
+  mesh.renderOrder = -1
+  return mesh
 }

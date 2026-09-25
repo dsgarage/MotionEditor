@@ -1,158 +1,153 @@
+/* 外周 6px の地の上に、上バー / 中段 / 下段トレイ。面は 6px の溝で分ける */
 .app {
   display: grid;
-  grid-template-rows: var(--toolbar-h) minmax(0, 1fr) var(--timeline-h);
+  grid-template-rows: var(--topbar-h) minmax(0, 1fr) var(--timeline-h);
+  gap: var(--gutter);
   height: 100%;
+  padding: var(--gutter);
 }
 
-/* ツールバー: 左(ロゴ・ファイル) | 中央(トランスポート) | 右 */
-.toolbar {
+/* 上バー: 左(ロゴ・メニュー) | 中央(モーション名) | 右(書き出し) */
+.topbar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 12px;
-  padding: 0 12px;
-  background: var(--color-panel);
-  border-bottom: 1px solid var(--color-line);
+  padding: 0 10px;
 }
 
-.toolbarStart,
-.toolbarEnd {
+.topStart,
+.topEnd {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
 }
 
-.toolbarEnd {
+.topEnd {
   justify-content: flex-end;
+  gap: 8px;
 }
 
 .brand {
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
-.transport {
+.menu {
   display: flex;
   align-items: center;
-  gap: 4px;
 }
 
-.transport button {
-  display: grid;
-  place-items: center;
-  min-width: 32px;
-  height: 32px;
-  padding: 0;
-  border-color: transparent;
+.topCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--fg-2);
+  white-space: nowrap;
 }
 
-.transport button:disabled {
-  opacity: 0.4;
-  cursor: default;
+.docName {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.transport button:disabled:hover {
-  background: transparent;
+.unsaved {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--key);
 }
 
-.transport .playBtn {
-  min-width: 40px;
-  border-color: var(--color-line);
+.noDoc {
+  color: var(--fg-3);
 }
 
-.transport .toggleOn {
-  color: var(--color-accent);
-  border-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
-}
-
-.frameReadout {
-  margin: 0 6px 0 10px;
-}
-
-.sub {
-  color: var(--color-text-sub);
-}
-
-/* 中段: 左パネル | 仕切り | ビューポート | 仕切り | 右パネル */
+/* 中段: 左トレイ | 溝 | ステージ | 溝 | 右トレイ */
 .main {
   display: grid;
   min-height: 0;
 }
 
-.viewport {
-  min-width: 0;
-  min-height: 0;
-}
-
-.splitter {
-  background: var(--color-line);
-  cursor: col-resize;
-  touch-action: none;
-}
-
-.splitter:hover {
-  background: var(--color-accent);
-}
-
-/* パネル */
-.panel {
+.tray {
   display: flex;
   flex-direction: column;
   min-width: 0;
   min-height: 0;
-  background: var(--color-panel);
   overflow: hidden;
+  border-radius: var(--radius-tray);
+  background: var(--tray);
 }
 
-.panelHeader {
+.tabRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  height: 32px;
-  padding: 0 4px 0 12px;
-  border-bottom: 1px solid var(--color-line);
+  gap: 2px;
+  height: 44px;
   flex: none;
+  padding: 0 8px;
 }
 
-.collapsed .panelHeader {
-  justify-content: center;
-  padding: 0;
+.grow {
+  flex: 1;
 }
 
-.panelTitle {
-  font-weight: 700;
-  font-size: 12px;
-  color: var(--color-text-sub);
-  white-space: nowrap;
+.stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* 溝そのものがリサイズのつまみ。触れたときだけ細い面を出す */
+.splitter {
+  position: relative;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.splitter::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 2px;
+  height: 40px;
+  translate: 0 -50%;
+  border-radius: 1px;
+  background: transparent;
+  transition-property: background-color;
+  transition-duration: var(--press-duration);
+  transition-timing-function: ease-out;
+}
+
+.splitter:hover::after,
+.splitter:active::after {
+  background: var(--fg-3);
 }
 
 .collapseBtn {
-  border: none;
-  padding: 0;
-  min-width: 24px;
-  height: 24px;
-  color: var(--color-text-sub);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: var(--radius-input);
+  color: var(--fg-3);
 }
 
-.panelBody {
-  flex: 1;
-  overflow: auto;
+.collapseBtn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
 }
 
-.section {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--color-line);
-}
-
-.sectionTitle {
-  margin: 0 0 6px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.sectionBody {
-  color: var(--color-text-sub);
-  font-size: 12px;
+.collapsedBtn {
+  width: 32px;
+  height: 32px;
+  margin: 6px auto 0;
 }

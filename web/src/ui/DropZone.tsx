@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useEditorStore } from '../store/editorStore'
+import { CloseIcon } from './icons'
 import { ACCEPT_EXTENSIONS, openFile } from './openFile'
 import styles from './DropZone.module.css'
 
@@ -60,9 +61,10 @@ export function DropZone() {
       )}
       {loadStatus.kind === 'error' && (
         <div className={styles.toast} role="alert">
+          <i className={styles.toastDot} aria-hidden="true" />
           <span>{loadStatus.message}</span>
           <button type="button" onClick={() => setLoadStatus({ kind: 'idle' })} aria-label="閉じる">
-            ×
+            <CloseIcon />
           </button>
         </div>
       )}
@@ -70,13 +72,13 @@ export function DropZone() {
   )
 }
 
-/** 「ファイルを選ぶ」ボタン */
-export function OpenFileButton() {
+/** 上バーの「ファイル」: .vrm / .vrma を選んで開く */
+export function OpenFileButton({ className }: { className?: string }) {
   const inputRef = useRef<HTMLInputElement>(null)
   return (
     <>
-      <button type="button" onClick={() => inputRef.current?.click()}>
-        ファイルを選ぶ
+      <button type="button" className={className} onClick={() => inputRef.current?.click()} title=".vrm / .vrma を開く">
+        ファイル
       </button>
       <input
         ref={inputRef}

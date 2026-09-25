@@ -1,0 +1,171 @@
+.inspector {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  padding: 14px 16px;
+  overflow: auto;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+}
+
+.empty {
+  flex: 1;
+  color: var(--fg-2);
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.name {
+  font-size: 17px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.id {
+  margin-left: auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--fg-dim);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.caption {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--fg-dim);
+}
+
+.field {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+}
+
+.field label {
+  font-size: 13px;
+  text-align: center;
+}
+
+.field input {
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--radius-input);
+  background: var(--well);
+  color: var(--fg);
+  font-size: 13px;
+  min-width: 0;
+}
+
+.keyRow {
+  display: flex;
+  gap: 6px;
+}
+
+.keyBtn {
+  flex: 1;
+  background: var(--key);
+  color: var(--primary-fg);
+  font-weight: 700;
+}
+
+.keyKbd {
+  display: inline-block;
+  min-width: 16px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.18);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* セグメント: 外 9 = 内 6 + パディング 3 */
+.seg {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-seg);
+  background: var(--well);
+}
+
+.seg button {
+  flex: 1;
+  height: 26px;
+  border-radius: var(--radius-seg-inner);
+  font-size: 12px;
+  color: var(--fg-2);
+}
+
+.seg .segOn {
+  background: var(--raised);
+  color: #ffffff;
+}
+
+.toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 34px;
+  font-size: 13px;
+}
+
+.dim {
+  color: var(--fg-dim);
+}
+
+.switch {
+  position: relative;
+  width: 40px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--well);
+}
+
+.switch i {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--fg-3);
+}
+
+.actions {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}

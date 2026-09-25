@@ -1,72 +1,63 @@
+/* ステージ左下。トランスポートのカプセル(幅 540)と重ならない幅に収める */
 .badge {
   position: absolute;
-  right: 12px;
-  bottom: 12px;
-  min-width: 180px;
-  max-width: 280px;
+  left: 12px;
+  bottom: 14px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: min(260px, calc(50% - 270px - 20px));
   padding: 8px 12px;
-  background: color-mix(in srgb, var(--color-panel) 92%, transparent);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius);
+  border-radius: 10px;
+  background: var(--float);
   font-size: 12px;
+  color: var(--fg-2);
 }
 
-.warn {
-  border-color: var(--color-warn);
+/* 横幅が足りないステージではカプセルの上に上げる */
+@container stage (max-width: 780px) {
+  .badge {
+    bottom: 80px;
+    max-width: 260px;
+  }
 }
 
 .name {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font-weight: 700;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-.spec {
-  font-family: var(--font-mono);
-  font-weight: 400;
-  font-size: 11px;
-  color: var(--color-text-sub);
-}
-
-.rows {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 2px 12px;
-  margin: 6px 0 0;
-}
-
-.rows dt {
-  color: var(--color-text-sub);
-}
-
-.rows dd {
-  margin: 0;
-}
-
-.rows dd[data-state='allowed'] {
-  color: var(--color-accent);
-}
-
-.rows dd[data-state='prohibited'] {
-  color: var(--color-warn);
+  color: var(--fg);
   font-weight: 700;
 }
 
+.rows {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+}
+
+.rows [data-state='prohibited'] {
+  color: var(--warn);
+  font-weight: 700;
+}
+
+.spec,
 .license {
-  margin-top: 6px;
-  color: var(--color-text-sub);
-  font-family: var(--font-mono);
   font-size: 11px;
+  color: var(--fg-3);
+}
+
+.license {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .note {
-  margin-top: 6px;
-  color: var(--color-warn);
+  color: var(--warn);
+}
+
+.warn .name {
+  color: var(--warn);
 }
