@@ -1,0 +1,28 @@
+# Node
+node_modules/
+dist/
+.vite/
+*.log
+.env
+.env.*
+
+# Unity (unity/ 配下)
+unity/[Ll]ibrary/
+unity/[Tt]emp/
+unity/[Oo]bj/
+unity/[Bb]uild/
+unity/[Bb]uilds/
+unity/[Ll]ogs/
+unity/[Uu]ser[Ss]ettings/
+unity/*.csproj
+unity/*.sln
+
+# ユーザーがアップロードしたアバター・モーション(リポに入れない)
+work/
+*.vrm
+*.vrma
+!web/public/avatars/*.vrm
+!web/public/samples/*.vrma
+
+# macOS
+.DS_Store
