@@ -23,8 +23,12 @@ import {
   type TimelineColors,
   type TimelineView,
 } from './draw'
-import { buildRows, type TimelineRow } from './rows'
+import { buildRows, rowHasBone, type TimelineRow } from './rows'
+import c from '../ui/controls.module.css'
+import { ChevronIcon } from '../ui/icons'
 import styles from './Timeline.module.css'
+
+const SOON = '今後対応します'
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
 
@@ -41,7 +45,7 @@ export function Timeline() {
       ) : (
         <div className={styles.empty}>
           <p>モーション(.vrma)をドロップすると、ボーンごとのキーが表示されます</p>
-          <button type="button" className={styles.sampleBtn} onClick={() => void openSampleVrma()} disabled={loading}>
+          <button type="button" className={c.act} onClick={() => void openSampleVrma()} disabled={loading}>
             サンプルを読む
           </button>
         </div>
@@ -74,17 +78,21 @@ function TimelineToolbar() {
   return (
     <div className={styles.toolbar}>
       <div className={styles.tabs} role="tablist" aria-label="タイムラインの表示">
-        <button type="button" role="tab" aria-selected="true" className={styles.tabActive}>
+        <button type="button" role="tab" aria-selected="true" className={`${c.tab} ${c.tabOn}`}>
           ドープシート
         </button>
-        <button type="button" role="tab" aria-selected="false" disabled title="グラフエディタは今後対応します">
+        <button type="button" role="tab" aria-selected="false" className={c.tab} aria-disabled="true" title="グラフエディタは今後対応します">
           グラフ
         </button>
       </div>
-      <span className={styles.meta}>
+      <span className={c.vrule} />
+      <button type="button" className={c.tab} aria-disabled="true" title={SOON}>
+        範囲選択
+      </button>
+      <button type="button" className={c.tab} aria-disabled="true" title={SOON}>
         スナップ <span className="mono">1f</span>
-      </span>
-      <label className={styles.meta}>
+      </button>
+      <label className={`${c.tab} ${styles.reduce}`}>
         キー間引き
         <input
           className={`mono ${styles.num}`}
@@ -101,14 +109,14 @@ function TimelineToolbar() {
         />
         °
       </label>
-      {doc && (
-        <span className={`${styles.meta} ${styles.right}`}>
-          <span className={styles.docName} title={doc.name}>
-            {doc.name}
-          </span>
-          <span className="mono">{keyCount.toLocaleString()} キー</span>
-        </span>
-      )}
+      <span className={styles.grow} />
+      {doc && <span className={`mono ${styles.meta}`}>{keyCount.toLocaleString()} キー</span>}
+      <span className={c.vrule} />
+      {['トリム', 'ループ化', '速度'].map((l) => (
+        <button key={l} type="button" className={c.tab} aria-disabled="true" title={SOON}>
+          {l}
+        </button>
+      ))}
     </div>
   )
 }
@@ -117,12 +125,18 @@ function DopeSheet() {
   const doc = useEditorStore((s) => s.document)!
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set())
   const rows = useMemo(() => buildRows(doc, expanded), [doc, expanded])
+  const selectedBone = useEditorStore((s) => s.selectedBones[0] ?? null)
+  const highlight = useMemo(
+    () => new Set(selectedBone ? rows.filter((r) => rowHasBone(r, selectedBone)).map((r) => r.id) : []),
+    [rows, selectedBone],
+  )
 
   const hostRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const labelsRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<TimelineView>({ width: 0, height: 0, scrollX: 0, scrollY: 0, pxPerFrame: 8 })
   const rowsRef = useRef<readonly TimelineRow[]>(rows)
+  const highlightRef = useRef<ReadonlySet<string>>(highlight)
   const colorsRef = useRef<TimelineColors | null>(null)
   const rafRef = useRef(0)
   const fittedRef = useRef(false)
@@ -145,6 +159,7 @@ function DopeSheet() {
       frameCount: s.document.frameCount,
       frame: s.frame,
       colors: colorsRef.current,
+      highlight: highlightRef.current,
     })
   }, [])
 
@@ -162,11 +177,23 @@ function DopeSheet() {
     [requestDraw],
   )
 
-  // 行が変わったら描き直す
+  // 行・強調が変わったら描き直す
   useEffect(() => {
     rowsRef.current = rows
+    highlightRef.current = highlight
     requestDraw()
-  }, [rows, requestDraw])
+  }, [rows, highlight, requestDraw])
+
+  // Web フォント(数字の等幅書体)が届いたら描き直す
+  useEffect(() => {
+    let alive = true
+    void document.fonts?.ready.then(() => {
+      if (alive) requestDraw()
+    })
+    return () => {
+      alive = false
+    }
+  }, [requestDraw])
 
   // キャンバスの大きさ(初回はクリップ全体が入る倍率にする)
   useEffect(() => {
@@ -279,40 +306,29 @@ function DopeSheet() {
   return (
     <div className={styles.body}>
       <div ref={labelsRef} className={styles.labels} onScroll={onLabelsScroll}>
-        <div className={styles.labelsHeader} style={{ height: RULER_H }}>
-          <span className="mono">
-            {doc.fps}fps · {doc.frameCount}f
-          </span>
-        </div>
-        {rows.map((row) =>
-          row.expandable ? (
-            <button
-              key={row.id}
-              type="button"
-              className={`${styles.label} ${styles.group}`}
-              data-side={row.side}
-              aria-expanded={row.expanded}
-              onClick={() => toggle(row.id)}
-            >
+        <div className={styles.labelsHeader} style={{ height: RULER_H }} />
+        {rows.map((row, i) => {
+          const cls = `${styles.label} ${row.depth === 0 ? styles.group : styles.child} ${i % 2 === 1 ? styles.alt : ''} ${highlight.has(row.id) ? styles.selected : ''}`
+          const body = (
+            <>
               <span className={styles.caret} aria-hidden="true">
-                {row.expanded ? '▾' : '▸'}
+                {row.expandable && <ChevronIcon dir={row.expanded ? 'down' : 'right'} />}
               </span>
               <span className={styles.dot} aria-hidden="true" />
-              {row.label}
+              <span className={styles.text}>{row.label}</span>
+              <span className={`mono ${styles.count}`}>{row.frames.length}</span>
+            </>
+          )
+          return row.expandable ? (
+            <button key={row.id} type="button" className={cls} data-side={row.side} aria-expanded={row.expanded} onClick={() => toggle(row.id)}>
+              {body}
             </button>
           ) : (
-            <div
-              key={row.id}
-              className={`${styles.label} ${row.depth === 0 ? styles.group : styles.child}`}
-              data-side={row.side}
-              title={row.label}
-            >
-              {row.depth === 0 && <span className={styles.caret} aria-hidden="true" />}
-              <span className={styles.dot} aria-hidden="true" />
-              {row.label}
+            <div key={row.id} className={cls} data-side={row.side} title={row.label}>
+              {body}
             </div>
-          ),
-        )}
+          )
+        })}
       </div>
       <div ref={hostRef} className={styles.tracks}>
         <canvas

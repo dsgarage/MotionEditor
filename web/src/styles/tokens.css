@@ -1,26 +1,60 @@
-/* デザイントークン(ダークのみ) */
+/* デザイントークン「ライトステージ」(#18、docs/design.md) */
 :root {
-  --color-bg: #15171c;
-  --color-panel: #1c1f26;
-  --color-line: #2e333d;
-  --color-text: #e8eaef;
-  --color-text-sub: #8f97a5;
-  --color-accent: #3ec9b3;
-  --color-key: #f5b431;
-  --color-left: #5b9cff;
-  --color-right: #ff6b6b;
-  --color-center: #f0c94a;
-  --color-warn: var(--color-key);
+  /* 面 */
+  --bg: #1c1c1c;
+  --tray: #262626;
+  --float: rgba(28, 28, 28, 0.92);
+  --well: #1c1c1c;
+  --raised: #3a3a3a;
+  --act: #333333;
+  --act-hover: #3d3d3d;
+  --track: #222222;
+  /* トレイ内の縦仕切りにだけ使う */
+  --rule: #3a3a3a;
 
-  --font-ui: 'IBM Plex Sans JP', system-ui, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  /* 文字 */
+  --fg: #ececec;
+  --fg-2: #a3a3a3;
+  --fg-3: #6f6f6f;
+  --fg-dim: #8f8f8f;
+  --fg-icon: #c9c9c9;
 
-  --toolbar-h: 48px;
-  --timeline-h: 292px;
-  --panel-left-w: 264px;
-  --panel-right-w: 288px;
-  --splitter-w: 4px;
-  --radius: 6px;
+  /* 主ボタン(白) */
+  --primary-bg: #ececec;
+  --primary-fg: #1c1c1c;
+
+  /* 意味の色 */
+  --key: #ffd23f;
+  --playhead: #ff4d3d;
+  --left: #5aa0ff;
+  --right: #ff6a5c;
+  --center: #d6d6d6;
+  --axis-x: #ff6a5c;
+  --axis-y: #6fd36f;
+  --axis-z: #5aa0ff;
+  --warn: var(--key);
+
+  /* ステージ(白ホリゾント) */
+  --stage: linear-gradient(180deg, #cfcfcf 0%, #b9b9b9 52%, #8c8c8c 100%);
+
+  /* 書体 */
+  --font-ui: 'BIZ UDPGothic', sans-serif;
+  --font-mono: 'Spline Sans Mono', monospace;
+
+  /* 寸法 */
+  --gutter: 6px;
+  --topbar-h: 40px;
+  --timeline-h: 280px;
+  --radius-tray: 12px;
+  --radius-float: 12px;
+  --radius-capsule: 16px;
+  --radius-btn: 9px;
+  --radius-input: 8px;
+  --radius-seg: 9px;
+  --radius-seg-inner: 6px;
+
+  /* 動き */
+  --press-duration: 120ms;
 
   color-scheme: dark;
 }

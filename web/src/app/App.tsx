@@ -1,15 +1,20 @@
-import { useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react'
+import { useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { Viewport } from '../viewport/Viewport'
-import { DropZone, OpenFileButton } from '../ui/DropZone'
+import { DropZone } from '../ui/DropZone'
 import { usePlaybackLoop } from '../motion/playback'
+import { BonePicker } from '../panels/BonePicker'
+import { Inspector } from '../panels/Inspector'
 import { Timeline } from '../timeline/Timeline'
+import c from '../ui/controls.module.css'
+import { ChevronIcon } from '../ui/icons'
+import { TopBar } from './TopBar'
 import { Transport } from './Transport'
 import { useShortcuts } from './useShortcuts'
 import styles from './App.module.css'
 
 const PANEL_MIN = 180
 const PANEL_MAX = 520
-const COLLAPSED_W = 28
+const COLLAPSED_W = 44
 
 type Side = 'left' | 'right'
 
@@ -20,13 +25,15 @@ interface PanelState {
 
 const clamp = (v: number) => Math.min(PANEL_MAX, Math.max(PANEL_MIN, v))
 
+const BODY_TABS = ['全身', '手', '表情', 'ツリー']
+
 export default function App() {
-  const [left, setLeft] = useState<PanelState>({ width: 264, collapsed: false })
-  const [right, setRight] = useState<PanelState>({ width: 288, collapsed: false })
+  const [left, setLeft] = useState<PanelState>({ width: 250, collapsed: false })
+  const [right, setRight] = useState<PanelState>({ width: 280, collapsed: false })
   usePlaybackLoop()
   useShortcuts()
 
-  // 仕切りのドラッグで幅を変える
+  // 溝(6px)のドラッグで幅を変える
   const startResize = (side: Side, e: ReactPointerEvent<HTMLDivElement>) => {
     e.preventDefault()
     const target = e.currentTarget
@@ -51,23 +58,42 @@ export default function App() {
 
   const leftW = left.collapsed ? COLLAPSED_W : left.width
   const rightW = right.collapsed ? COLLAPSED_W : right.width
+  const toggleLeft = () => setLeft((p) => ({ ...p, collapsed: !p.collapsed }))
+  const toggleRight = () => setRight((p) => ({ ...p, collapsed: !p.collapsed }))
 
   return (
     <div className={styles.app}>
-      <Toolbar />
+      <TopBar />
       <div
         className={styles.main}
-        style={{ gridTemplateColumns: `${leftW}px var(--splitter-w) minmax(0, 1fr) var(--splitter-w) ${rightW}px` }}
+        style={{ gridTemplateColumns: `${leftW}px var(--gutter) minmax(0, 1fr) var(--gutter) ${rightW}px` }}
       >
-        <SidePanel
-          side="left"
-          title="元動画 / ボーン"
-          collapsed={left.collapsed}
-          onToggle={() => setLeft((p) => ({ ...p, collapsed: !p.collapsed }))}
-        >
-          <Section title="元動画">未読込</Section>
-          <Section title="ボーン">アバターを読み込むと表示されます</Section>
-        </SidePanel>
+        <aside className={styles.tray} aria-label="ボーン選択">
+          {left.collapsed ? (
+            <CollapseButton side="left" collapsed onClick={toggleLeft} />
+          ) : (
+            <>
+              <div className={styles.tabRow} role="tablist" aria-label="選択の方法">
+                {BODY_TABS.map((t, i) => (
+                  <button
+                    key={t}
+                    type="button"
+                    role="tab"
+                    aria-selected={i === 0}
+                    aria-disabled={i === 0 ? undefined : 'true'}
+                    title={i === 0 ? undefined : '今後対応します'}
+                    className={`${c.tab} ${i === 0 ? c.tabOn : ''}`}
+                  >
+                    {t}
+                  </button>
+                ))}
+                <span className={styles.grow} />
+                <CollapseButton side="left" collapsed={false} onClick={toggleLeft} />
+              </div>
+              <BonePicker />
+            </>
+          )}
+        </aside>
         <div
           className={styles.splitter}
           role="separator"
@@ -75,8 +101,9 @@ export default function App() {
           aria-label="左パネルの幅"
           onPointerDown={(e) => startResize('left', e)}
         />
-        <main className={styles.viewport}>
+        <main className={styles.stage}>
           <Viewport />
+          <Transport />
         </main>
         <div
           className={styles.splitter}
@@ -85,14 +112,13 @@ export default function App() {
           aria-label="右パネルの幅"
           onPointerDown={(e) => startResize('right', e)}
         />
-        <SidePanel
-          side="right"
-          title="インスペクタ"
-          collapsed={right.collapsed}
-          onToggle={() => setRight((p) => ({ ...p, collapsed: !p.collapsed }))}
-        >
-          <Section title="選択ボーン">なし</Section>
-        </SidePanel>
+        <aside className={styles.tray} aria-label="選択ボーンの値">
+          {right.collapsed ? (
+            <CollapseButton side="right" collapsed onClick={toggleRight} />
+          ) : (
+            <Inspector collapseButton={<CollapseButton side="right" collapsed={false} onClick={toggleRight} />} />
+          )}
+        </aside>
       </div>
       <Timeline />
       <DropZone />
@@ -100,53 +126,20 @@ export default function App() {
   )
 }
 
-function Toolbar() {
+function CollapseButton({ side, collapsed, onClick }: { side: Side; collapsed: boolean; onClick: () => void }) {
+  // 開いているときは外側へ、閉じているときは内側へ向ける
+  const dir = side === 'left' ? (collapsed ? 'right' : 'left') : collapsed ? 'left' : 'right'
+  const name = side === 'left' ? '左パネル' : '右パネル'
   return (
-    <header className={styles.toolbar}>
-      <div className={styles.toolbarStart}>
-        <span className={styles.brand}>MotionEditor</span>
-        <OpenFileButton />
-      </div>
-      <Transport />
-      <div className={styles.toolbarEnd} />
-    </header>
-  )
-}
-
-interface SidePanelProps {
-  side: Side
-  title: string
-  collapsed: boolean
-  onToggle: () => void
-  children: ReactNode
-}
-
-function SidePanel({ side, title, collapsed, onToggle, children }: SidePanelProps) {
-  const arrow = side === 'left' ? (collapsed ? '›' : '‹') : collapsed ? '‹' : '›'
-  return (
-    <aside className={`${styles.panel} ${collapsed ? styles.collapsed : ''}`}>
-      <div className={styles.panelHeader}>
-        {!collapsed && <span className={styles.panelTitle}>{title}</span>}
-        <button
-          type="button"
-          className={styles.collapseBtn}
-          onClick={onToggle}
-          aria-label={collapsed ? `${title}を開く` : `${title}を折りたたむ`}
-          aria-expanded={!collapsed}
-        >
-          {arrow}
-        </button>
-      </div>
-      {!collapsed && <div className={styles.panelBody}>{children}</div>}
-    </aside>
-  )
-}
-
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className={styles.section}>
-      <h2 className={styles.sectionTitle}>{title}</h2>
-      <div className={styles.sectionBody}>{children}</div>
-    </section>
+    <button
+      type="button"
+      className={`${styles.collapseBtn} ${collapsed ? styles.collapsedBtn : ''}`}
+      onClick={onClick}
+      aria-label={collapsed ? `${name}を開く` : `${name}を折りたたむ`}
+      aria-expanded={!collapsed}
+      title={collapsed ? `${name}を開く` : `${name}を折りたたむ`}
+    >
+      <ChevronIcon dir={dir} />
+    </button>
   )
 }

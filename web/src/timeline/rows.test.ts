@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { DEFAULT_TOLERANCE, type MotionDocument, type RotationKey } from '../motion/MotionDocument'
-import { buildRows } from './rows'
+import { buildRows, rowHasBone } from './rows'
 
 const key = (frame: number): RotationKey => ({ frame, q: [0, 0, 0, 1], interp: 'linear' })
 
@@ -53,5 +53,13 @@ describe('タイムラインの行', () => {
     const last = rows[rows.length - 1]
     expect(last.label).toBe('happy')
     expect(Array.from(last.frames)).toEqual([40])
+  })
+
+  it('選択ボーンを含む行(グループと個別行)だけが強調対象になる', () => {
+    const rows = buildRows(doc, new Set(['leftArm', 'hips']))
+    const hit = rows.filter((r) => rowHasBone(r, 'leftUpperArm')).map((r) => r.id)
+    expect(hit).toEqual(['leftArm', 'leftArm/leftUpperArm'])
+    expect(rows.filter((r) => rowHasBone(r, 'hips')).map((r) => r.id)).toEqual(['hips', 'hips/hips 回転'])
+    expect(rows.some((r) => rowHasBone(r, 'happy'))).toBe(false)
   })
 })
