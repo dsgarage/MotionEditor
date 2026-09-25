@@ -26,3 +26,14 @@ work/
 
 # macOS
 .DS_Store
+
+# spike/fbx-anim(#11): Unity 検証プロジェクトの生成物とログ
+spike/fbx-anim/UnityCheck/[Ll]ibrary/
+spike/fbx-anim/UnityCheck/[Tt]emp/
+spike/fbx-anim/UnityCheck/[Oo]bj/
+spike/fbx-anim/UnityCheck/[Ll]ogs/
+spike/fbx-anim/UnityCheck/[Uu]ser[Ss]ettings/
+spike/fbx-anim/UnityCheck/Assets/Spike/
+spike/fbx-anim/UnityCheck/Assets/Spike.meta
+spike/fbx-anim/UnityCheck/*.csproj
+spike/fbx-anim/UnityCheck/*.sln
