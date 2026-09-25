@@ -1,7 +1,10 @@
 import { useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react'
 import { Viewport } from '../viewport/Viewport'
 import { DropZone, OpenFileButton } from '../ui/DropZone'
-import { useEditorStore } from '../store/editorStore'
+import { usePlaybackLoop } from '../motion/playback'
+import { Timeline } from '../timeline/Timeline'
+import { Transport } from './Transport'
+import { useShortcuts } from './useShortcuts'
 import styles from './App.module.css'
 
 const PANEL_MIN = 180
@@ -20,6 +23,8 @@ const clamp = (v: number) => Math.min(PANEL_MAX, Math.max(PANEL_MIN, v))
 export default function App() {
   const [left, setLeft] = useState<PanelState>({ width: 264, collapsed: false })
   const [right, setRight] = useState<PanelState>({ width: 288, collapsed: false })
+  usePlaybackLoop()
+  useShortcuts()
 
   // 仕切りのドラッグで幅を変える
   const startResize = (side: Side, e: ReactPointerEvent<HTMLDivElement>) => {
@@ -96,32 +101,14 @@ export default function App() {
 }
 
 function Toolbar() {
-  const fps = useEditorStore((s) => s.fps)
-  const frame = useEditorStore((s) => s.frame)
-  const isPlaying = useEditorStore((s) => s.isPlaying)
-  const setPlaying = useEditorStore((s) => s.setPlaying)
-  const setFrame = useEditorStore((s) => s.setFrame)
   return (
     <header className={styles.toolbar}>
-      <span className={styles.brand}>MotionEditor</span>
-      <OpenFileButton />
-      <div className={styles.transport}>
-        <button type="button" onClick={() => setPlaying(!isPlaying)} aria-label={isPlaying ? '一時停止' : '再生'}>
-          {isPlaying ? '⏸' : '▶'}
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setPlaying(false)
-            setFrame(0)
-          }}
-          aria-label="停止"
-        >
-          ⏹
-        </button>
-        <span className="mono">{String(frame).padStart(4, '0')}</span>
-        <span className={`mono ${styles.sub}`}>{fps}fps</span>
+      <div className={styles.toolbarStart}>
+        <span className={styles.brand}>MotionEditor</span>
+        <OpenFileButton />
       </div>
+      <Transport />
+      <div className={styles.toolbarEnd} />
     </header>
   )
 }
@@ -161,16 +148,5 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
       <h2 className={styles.sectionTitle}>{title}</h2>
       <div className={styles.sectionBody}>{children}</div>
     </section>
-  )
-}
-
-function Timeline() {
-  return (
-    <footer className={styles.timeline}>
-      <div className={styles.panelHeader}>
-        <span className={styles.panelTitle}>タイムライン</span>
-      </div>
-      <div className={styles.timelineBody}>モーションを読み込むとキーが表示されます</div>
-    </footer>
   )
 }

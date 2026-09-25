@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { VRMUtils } from '@pixiv/three-vrm'
+import { applyPose } from '../motion/applyPose'
+import { evaluate } from '../motion/evaluate'
 import { useEditorStore } from '../store/editorStore'
 import { LicenseBadge } from '../ui/LicenseBadge'
 import { createMannequin } from './mannequin'
@@ -71,7 +73,12 @@ export function Viewport() {
       raf = requestAnimationFrame(tick)
       timer.update(timestamp)
       const delta = timer.getDelta()
-      useEditorStore.getState().avatar?.vrm.update(delta)
+      const { avatar: current, document: doc, frame } = useEditorStore.getState()
+      if (current) {
+        // モーションは AnimationMixer を使わず、ドキュメントを現在フレームで評価して正規化ボーンへ流す
+        if (doc) applyPose(current.vrm, evaluate(doc, frame), doc.restHipsHeight)
+        current.vrm.update(delta)
+      }
       controls.update()
       renderer.render(scene, camera)
     }

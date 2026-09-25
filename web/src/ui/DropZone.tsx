@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { openVrmFile } from '../avatar/openVrmFile'
 import { useEditorStore } from '../store/editorStore'
+import { ACCEPT_EXTENSIONS, openFile } from './openFile'
 import styles from './DropZone.module.css'
 
 function hasFiles(e: DragEvent): boolean {
   return Array.from(e.dataTransfer?.types ?? []).includes('Files')
 }
 
-/** 画面全体へのドラッグ&ドロップを受け付け、ドラッグ中のオーバーレイとエラーメッセージを出す */
+/** 画面全体へのドラッグ&ドロップ(.vrm / .vrma)を受け付け、ドラッグ中のオーバーレイとエラーメッセージを出す */
 export function DropZone() {
   const [dragging, setDragging] = useState(false)
   const depth = useRef(0)
@@ -37,7 +37,7 @@ export function DropZone() {
       depth.current = 0
       setDragging(false)
       const file = e.dataTransfer?.files[0]
-      if (file) void openVrmFile(file)
+      if (file) void openFile(file)
     }
     window.addEventListener('dragenter', onEnter)
     window.addEventListener('dragover', onOver)
@@ -55,7 +55,7 @@ export function DropZone() {
     <>
       {dragging && (
         <div className={styles.overlay}>
-          <div className={styles.overlayBox}>.vrm をドロップして読み込む</div>
+          <div className={styles.overlayBox}>.vrm(アバター)/ .vrma(モーション)をドロップして読み込む</div>
         </div>
       )}
       {loadStatus.kind === 'error' && (
@@ -81,12 +81,12 @@ export function OpenFileButton() {
       <input
         ref={inputRef}
         type="file"
-        accept=".vrm"
+        accept={ACCEPT_EXTENSIONS}
         hidden
         onChange={(e) => {
           const file = e.currentTarget.files?.[0]
           e.currentTarget.value = ''
-          if (file) void openVrmFile(file)
+          if (file) void openFile(file)
         }}
       />
     </>

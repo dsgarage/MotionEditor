@@ -1,0 +1,210 @@
+.timeline {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--color-panel);
+  border-top: 1px solid var(--color-line);
+}
+
+/* 上段 36px: タブ・スナップ・間引きしきい値 */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 36px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--color-line);
+  flex: none;
+  font-size: 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+}
+
+.tabs button {
+  border: none;
+  padding: 2px 10px;
+  font-size: 12px;
+  border-radius: calc(var(--radius) - 2px);
+  color: var(--color-text-sub);
+}
+
+.tabs button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.tabs button:disabled:hover {
+  background: transparent;
+}
+
+.tabs .tabActive {
+  background: var(--color-line);
+  color: var(--color-text);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-sub);
+  white-space: nowrap;
+}
+
+.right {
+  margin-left: auto;
+  min-width: 0;
+}
+
+.docName {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text);
+}
+
+.num {
+  width: 56px;
+  height: 24px;
+  padding: 0 6px;
+  font-size: 12px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-line);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.num:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.num:disabled {
+  opacity: 0.5;
+}
+
+/* 未読込 */
+.empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--color-text-sub);
+}
+
+.empty p {
+  margin: 0;
+}
+
+.sampleBtn {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* 本体: ラベル列 200px | トラック */
+.body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  min-height: 0;
+}
+
+.labels {
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 1px solid var(--color-line);
+  scrollbar-width: thin;
+}
+
+.labelsHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  background: var(--color-panel);
+  border-bottom: 1px solid var(--color-line);
+  color: var(--color-text-sub);
+  font-size: 11px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border: none;
+  border-bottom: 1px solid var(--color-line);
+  border-radius: 0;
+  font-size: 12px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+button.label:active {
+  transform: none;
+}
+
+.group {
+  background: var(--color-panel);
+  font-weight: 500;
+}
+
+.child {
+  padding-left: 30px;
+  background: var(--color-bg);
+  color: var(--color-text-sub);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.caret {
+  width: 12px;
+  flex: none;
+  color: var(--color-text-sub);
+  font-size: 10px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--color-center);
+}
+
+.label[data-side='left'] .dot {
+  background: var(--color-left);
+}
+
+.label[data-side='right'] .dot {
+  background: var(--color-right);
+}
+
+.tracks {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  cursor: ew-resize;
+  touch-action: none;
+}

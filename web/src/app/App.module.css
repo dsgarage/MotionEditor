@@ -4,14 +4,27 @@
   height: 100%;
 }
 
-/* ツールバー */
+/* ツールバー: 左(ロゴ・ファイル) | 中央(トランスポート) | 右 */
 .toolbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 12px;
   padding: 0 12px;
   background: var(--color-panel);
   border-bottom: 1px solid var(--color-line);
+}
+
+.toolbarStart,
+.toolbarEnd {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.toolbarEnd {
+  justify-content: flex-end;
 }
 
 .brand {
@@ -22,12 +35,39 @@
 .transport {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-left: auto;
+  gap: 4px;
 }
 
 .transport button {
+  display: grid;
+  place-items: center;
   min-width: 32px;
+  height: 32px;
+  padding: 0;
+  border-color: transparent;
+}
+
+.transport button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.transport button:disabled:hover {
+  background: transparent;
+}
+
+.transport .playBtn {
+  min-width: 40px;
+  border-color: var(--color-line);
+}
+
+.transport .toggleOn {
+  color: var(--color-accent);
+  border-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
+}
+
+.frameReadout {
+  margin: 0 6px 0 10px;
 }
 
 .sub {
@@ -115,20 +155,4 @@
 .sectionBody {
   color: var(--color-text-sub);
   font-size: 12px;
-}
-
-/* タイムライン */
-.timeline {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  background: var(--color-panel);
-  border-top: 1px solid var(--color-line);
-}
-
-.timelineBody {
-  flex: 1;
-  display: grid;
-  place-items: center;
-  color: var(--color-text-sub);
 }
