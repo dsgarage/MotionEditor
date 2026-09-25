@@ -1,0 +1,53 @@
+Launching asset import ...           OK
+Validating postprocessing flags ...  OK
+0 %50 %50 %51.5152 %53.0303 %54.5455 %56.0606 %57.5758 %59.0909 %60.6061 %62.1212 %63.6364 %65.1515 %66.6667 %68.1818 %69.697 %71.2121 %72.7273 %74.2424 %75.7576 %77.2727 %78.7879 %80.303 %81.8182 %83.3333 %84.8485 %86.3636 %87.8788 %89.3939 %90.9091 %92.4242 %93.9394 %95.4546 %96.9697 %98.4848 %100 %Importing file ...                   OK 
+   import took approx. 0.00180 seconds
+
+Memory consumption: 66016 B
+Nodes:              23
+Maximum depth       9
+Meshes:             0
+Animations:         1
+Textures (embed.):  0
+Materials:          0
+Cameras:            0
+Lights:             0
+Vertices:           0
+Faces:              0
+Bones:              0
+Animation Channels: 22
+Primitive Types:    
+Average faces/mesh  0
+Average verts/mesh  0
+Minimum point      (10000000000.000000 10000000000.000000 10000000000.000000)
+Maximum point      (-10000000000.000000 -10000000000.000000 -10000000000.000000)
+Center point       (0.000000 0.000000 0.000000)
+
+Named Animations:
+     'TestMotion'
+
+Node hierarchy:
+RootNode
+└╴hips
+  ├╴leftUpperLeg
+  │ └╴leftLowerLeg
+  │   └╴leftFoot
+  │     └╴leftToes
+  ├╴rightUpperLeg
+  │ └╴rightLowerLeg
+  │   └╴rightFoot
+  │     └╴rightToes
+  └╴spine
+    └╴chest
+      └╴upperChest
+        ├╴leftShoulder
+        │ └╴leftUpperArm
+        │   └╴leftLowerArm
+        │     └╴leftHand
+        ├╴neck
+        │ └╴head
+        └╴rightShoulder
+          └╴rightUpperArm
+            └╴rightLowerArm
+              └╴rightHand
+
