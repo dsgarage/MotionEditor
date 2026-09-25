@@ -1,0 +1,72 @@
+.badge {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  min-width: 180px;
+  max-width: 280px;
+  padding: 8px 12px;
+  background: color-mix(in srgb, var(--color-panel) 92%, transparent);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  font-size: 12px;
+}
+
+.warn {
+  border-color: var(--color-warn);
+}
+
+.name {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-weight: 700;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.spec {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--color-text-sub);
+}
+
+.rows {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 12px;
+  margin: 6px 0 0;
+}
+
+.rows dt {
+  color: var(--color-text-sub);
+}
+
+.rows dd {
+  margin: 0;
+}
+
+.rows dd[data-state='allowed'] {
+  color: var(--color-accent);
+}
+
+.rows dd[data-state='prohibited'] {
+  color: var(--color-warn);
+  font-weight: 700;
+}
+
+.license {
+  margin-top: 6px;
+  color: var(--color-text-sub);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.note {
+  margin-top: 6px;
+  color: var(--color-warn);
+}

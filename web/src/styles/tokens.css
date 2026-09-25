@@ -1,0 +1,26 @@
+/* デザイントークン(ダークのみ) */
+:root {
+  --color-bg: #15171c;
+  --color-panel: #1c1f26;
+  --color-line: #2e333d;
+  --color-text: #e8eaef;
+  --color-text-sub: #8f97a5;
+  --color-accent: #3ec9b3;
+  --color-key: #f5b431;
+  --color-left: #5b9cff;
+  --color-right: #ff6b6b;
+  --color-center: #f0c94a;
+  --color-warn: var(--color-key);
+
+  --font-ui: 'IBM Plex Sans JP', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --toolbar-h: 48px;
+  --timeline-h: 292px;
+  --panel-left-w: 264px;
+  --panel-right-w: 288px;
+  --splitter-w: 4px;
+  --radius: 6px;
+
+  color-scheme: dark;
+}
